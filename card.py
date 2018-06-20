@@ -4,6 +4,8 @@ class Card():
     def __init__(self, rank, suit):
         self.rank=rank
         self.suit=suit 
+    def points(self):
+        return self.rank
     def __str__(self):
         return "{0} of {1}".format(self.rank, self.suit)
 class Deck():
@@ -20,10 +22,8 @@ class Suit():
         self.suitname=suitname
     def __str__(self):
         return str(self.suitname)
-    
 Diamonds=Suit('Diamonds', '♢')
 Spades=Suit('Spades', '♠')
 Hearts=Suit('Hearts', '♡')
 Clubs=Suit('Clubs', '♣')
-d=Deck()
-print(d)
+
