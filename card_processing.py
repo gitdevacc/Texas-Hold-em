@@ -4,6 +4,8 @@ class Table():
         self.deck=Deck()
         self.deck.shuffle()
         self.middle=[self.deck.pop(),self.deck.pop(),self.deck.pop()]
+        self.current_bet=0
+        self.pot=0
     def deal_hand(self):
         if len(d)!=0:
             return [self.deck.pop(),self.deck.pop()]
@@ -24,12 +26,18 @@ class Table():
             self.deck.shuffle()
         else:
             pass
-    #def evaluate_hand(self, hand): #under progress DO NOT TOUCH 
+    def update_betamount(self, higherbet):
+        if higherbet<=self.current_bet: 
+            return False
+        elif isinstance(higherbet, int)==False: 
+            raise Exception("Bet must be an integer.")
+        else:
+            self.current_bet=higherbet
+    #def evaluate_hand(self, hand): #under progress DO NOT TOUCH
+t=Table() 
 class Hand():
     def __init__(self):
-        t=Table()
         self.hand=[t.deal_hand()]
-        self.current_bet=0
     def __getitem__(self, index):
         return self.hand[index]
     def __str__(self):
@@ -44,30 +52,37 @@ class Hand():
         print('Fold. Waiting for next game...')
         t.return_cards(self.hand)
         self.hand=[]
-    def update_betamount(self, higherbet):
-        if higherbet<=self.current_bet: 
-            return False
-        elif isinstance(higherbet, int)==False: 
-            raise Exception("Bet must be an integer.")
-        else:
-            self.current_bet=higherbet
 class Player(Hand):
     def __init__(self):
         h=Hand()
+        self.balance=1000
     def place_bet(self, amount):
-        self.bet_amount=amount
+        self.bet_amount=2
+        global t.pot+=self.bet_amount  #fixme
         print("Bet", amount)
     def check(self):
-        
+        self.balance-=global t.current_bet+self.bet_amount
+        global t.pot+= global t.current_bet-self.bet_amount
+        print("Check.")
+    def raise_amount(self, amount):
+        if global t.update_betamount()!=False:
+            self.balance-= amount
+            print("Raised bet by", amount)
+            print("You have {} dollars reamining. Bet wisely!".format(self.balance))
 class AIPlayer(Player):
+    def __init__(self):
+        self.player=Player()
     def initial_bet_strategy(self):
-        self.bet_amount=5
+        self.bet_amount=2
         if h.check_double()==True:
             self.bet_amount*2
         else: 
             pass
     def fold_strategy(self):
-        if 
+        if t.current_bet-self.bet_amount>3*self.bet_amount: 
+            h.fold()
+        else:
+            self.player.check()
     
 
     
